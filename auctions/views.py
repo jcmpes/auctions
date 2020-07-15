@@ -3,8 +3,10 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+# from django.views.generic import CreateView
+from .forms import CreateListing
 
-from .models import User
+from .models import User, Auction
 
 
 def index(request):
@@ -61,3 +63,22 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+
+
+# class AuctionCreateView(CreateView):
+#     model = Auction
+#     fields = ('title', 'starting_bid', 'description', 'image', 'category')
+
+
+
+def create(request):
+    if request.method == "POST":
+        form = CreateListing(request.POST)
+        if form.is_valid():
+            user = request.user
+            form.save()
+            return render(request, "auctions/index.html")
+
+    else:
+        form = CreateListing()
+        return render(request, "auctions/create.html", {'form': form})

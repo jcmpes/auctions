@@ -13,19 +13,19 @@ def user_directory_path(instance, filename):
 
 class Auction(models.Model):
     CATEGORIES = [
-        (TOYS, 'Toys'),
-        (ELECTRONICS, 'Electronics'),
-        (HOME, "Home"),
-        (FASHION, "Fashion"),
-        (OTHER, "Other")
+        ('TO', 'Toys'),
+        ('EL', 'Electronics'),
+        ('HO', "Home"),
+        ('FA', "Fashion"),
+        ('OT', "Other")
         
     ]
-    user_id = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     starting_bid = models.DecimalField(max_digits=8, decimal_places=2)
     title = models.CharField(max_length=60)
-    desctiption = models.TextField(blank=False)
+    description = models.TextField(blank=False)
     image = models.ImageField(upload_to=user_directory_path)
-    category = models.CharField(max_length=12, choices=CATEGORIES)
+    category = models.CharField(max_length=2, choices=CATEGORIES)
 
 
 class Bid(models.Model):
