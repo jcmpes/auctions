@@ -73,10 +73,12 @@ def register(request):
 
 def create(request):
     if request.method == "POST":
-        form = CreateListing(request.POST)
+        form = CreateListing(request.POST, request.FILES)
         if form.is_valid():
-            user = request.user
-            form.save()
+            
+            obj = form.save(commit=False)
+            obj.user = request.user
+            obj.save()
             return render(request, "auctions/index.html")
 
     else:

@@ -1,6 +1,7 @@
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 from django.db import models
+from django.conf import settings
 
 
 class User(AbstractUser):
@@ -20,13 +21,15 @@ class Auction(models.Model):
         ('OT', "Other")
         
     ]
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     starting_bid = models.DecimalField(max_digits=8, decimal_places=2)
     title = models.CharField(max_length=60)
     description = models.TextField(blank=False)
     image = models.ImageField(upload_to=user_directory_path)
     category = models.CharField(max_length=2, choices=CATEGORIES)
 
+    def __str__(self):
+        return '{} | {}'.format(self.user, self.title)
 
 class Bid(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.DO_NOTHING)
