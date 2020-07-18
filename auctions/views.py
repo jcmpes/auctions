@@ -1,16 +1,17 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.urls import reverse
 # from django.views.generic import CreateView
-from .forms import CreateListing
+from .forms import CreateListing, CreateListingImages
 
-from .models import User, Auction
+from .models import User, Auction, AuctionImage
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    auctions = Auction.objects.all()
+    return render(request, "auctions/index.html", {"auctions": auctions})
 
 
 def login_view(request):
@@ -73,14 +74,27 @@ def register(request):
 
 def create(request):
     if request.method == "POST":
-        form = CreateListing(request.POST, request.FILES)
+        form = CreateListingImages(request.POST, request.FILES or None)
+        files = request.FILES.getlist('images')
         if form.is_valid():
             
             obj = form.save(commit=False)
             obj.user = request.user
             obj.save()
+            for f in files:
+                AuctionImage.objects.create(auction=obj, image=f)
             return render(request, "auctions/index.html")
 
     else:
-        form = CreateListing()
+        form = CreateListingImages()
         return render(request, "auctions/create.html", {'form': form})
+
+    
+def detail(request, id):
+    auction = get_object_or_404(Auction, id=id)
+    images = AuctionImage.objects.filter(auction=auction)
+    context = {
+        "auction": auction,
+        "images": images,
+    }
+    return render(request, "auctions/listing_detail.html", context)

@@ -2,6 +2,25 @@
 
 {% block body %}
     <h2>Active Listings</h2>
+    <div class="container">
+        <div class="row">
+            
+            <ul>
+            {% for auction in auctions %}
+                <div class="auction-item d-flex">
+                    <div class="col-4">
+                        <div><img class="auction-image" src="/media/{{ auction.image }}" alt=""></div>
+                    </div>
+                    <div class="col-8 auction-data">
+                        <div class="auction-title">{{ auction.title }}</div>
+                        <div class="auction-description">{{ auction.description }}</div>
+                        <div class="auction-bid">{{ auction.starting_bid }} €</div>
+                        <div class="auction-date">Created on {{ auction.date }}</div>
+                    </div>
+                </div>
+            {% endfor %}
+            </ul>
 
-    TODO
+        </div>
+    </div>
 {% endblock %}

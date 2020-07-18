@@ -25,11 +25,21 @@ class Auction(models.Model):
     starting_bid = models.DecimalField(max_digits=8, decimal_places=2)
     title = models.CharField(max_length=60)
     description = models.TextField(blank=False)
-    image = models.ImageField(upload_to=user_directory_path)
+    image = models.ImageField(upload_to='media/%Y/%m/%d/')
     category = models.CharField(max_length=2, choices=CATEGORIES)
+    date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
         return '{} | {}'.format(self.user, self.title)
+
+
+class AuctionImage(models.Model):
+    auction = models.ForeignKey(Auction, on_delete=models.CASCADE, blank=True, null=True)
+    image = models.ImageField(upload_to='media/%Y/%m/%d/')
+
+    def __str__(self):
+        return self.auction.title
+
 
 class Bid(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.DO_NOTHING)

@@ -1,3 +1,35 @@
 body {
     padding: 10px;
 }
+
+.auction-image {
+    max-width: 100%;
+    max-height: 230px;
+}
+
+.auction-item {
+    padding: 10px;
+}
+
+.auction-title {
+    font-size: 28px;
+    font-weight: bolder;
+}
+
+.auction-data {
+    position: relative;
+    padding: 10px;
+}
+
+.auction-bid {
+    position: absolute;
+    bottom: 50px;
+    font-size: 24px;
+}
+
+.auction-date {
+    position: absolute;
+    bottom: 20px;
+    font-size: 10px;
+    color: grey;
+}
