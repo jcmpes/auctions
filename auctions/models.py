@@ -28,6 +28,7 @@ class Auction(models.Model):
     image = models.ImageField(upload_to='media/%Y/%m/%d/')
     category = models.CharField(max_length=2, choices=CATEGORIES)
     date = models.DateTimeField(default=timezone.now)
+    wl = models.ManyToManyField(User, related_name='watchlist', blank=True)
 
     def __str__(self):
         return '{} | {}'.format(self.user, self.title)

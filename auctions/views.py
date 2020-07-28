@@ -1,8 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib import messages
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
+from django.views.generic.detail import DetailView
+
 # from django.views.generic import CreateView
 from .forms import CreateListing, CreateListingImages
 
@@ -91,10 +94,28 @@ def create(request):
 
     
 def detail(request, id):
-    auction = get_object_or_404(Auction, id=id)
+    auction = get_object_or_404(Auction, pk=id)
     images = AuctionImage.objects.filter(auction=auction)
     context = {
         "auction": auction,
         "images": images,
+        "id": id
     }
-    return render(request, "auctions/listing_detail.html", context)
+    return render(request, "auctions/auction_detail.html", context)
+
+
+def watchlist(request, id):
+    check = Auction.objects.get(id=id)
+    if check.wl.exists():
+        check.wl.remove(request.user)
+        check.save()
+        messages.info(request, "Item was removed from your watchlist")
+    else:
+        check.wl.add(request.user)
+        check.save()
+        messages.info(request, "Item was added to your watchlist")
+    return redirect('detail', id=id)
+
+
+class ListingDetail(DetailView):
+    model = Auction

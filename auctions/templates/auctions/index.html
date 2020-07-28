@@ -9,7 +9,11 @@
             {% for auction in auctions %}
                 <div class="auction-item d-flex">
                     <div class="col-4">
-                        <div><img class="auction-image" src="/media/{{ auction.image }}" alt=""></div>
+                        <div>
+                            <a href="{% url 'detail' auction.id %}">
+                                <img class="auction-image" src="/media/{{ auction.image }}" alt="">
+                            </a>
+                        </div>
                     </div>
                     <div class="col-8 auction-data">
                         <div class="auction-title">{{ auction.title }}</div>

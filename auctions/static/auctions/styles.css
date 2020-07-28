@@ -33,3 +33,11 @@ body {
     font-size: 10px;
     color: grey;
 }
+
+.featured-image {
+    float: left;
+}
+
+.fa-heart {
+    color: #F783AC;
+}
