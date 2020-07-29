@@ -44,6 +44,10 @@ body {
     color: #F783AC;
 }
 
-.place-bid {
+.place-bid, .delete-bid {
     margin-top: 30px;
+}
+
+.auction-won {
+    color: green;
 }

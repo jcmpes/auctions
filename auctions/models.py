@@ -29,6 +29,7 @@ class Auction(models.Model):
     category = models.CharField(max_length=2, choices=CATEGORIES)
     date = models.DateTimeField(default=timezone.now)
     wl = models.ManyToManyField(User, related_name='watchlist', blank=True)
+    active = models.BooleanField(default=True)
 
     def __str__(self):
         return '{} | {}'.format(self.user, self.title)

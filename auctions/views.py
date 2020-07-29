@@ -13,7 +13,7 @@ from .models import User, Auction, AuctionImage, Bid
 
 
 def index(request):
-    auctions = Auction.objects.all()
+    auctions = Auction.objects.filter(active=True)
     return render(request, "auctions/index.html", {"auctions": auctions})
 
 
@@ -96,20 +96,19 @@ def create(request):
 def detail(request, id):
     if request.method == "POST":
         auction = get_object_or_404(Auction, pk=id)
-        new_bid = request.POST['bid']
-        obj = Bid.objects.create(user_id=request.user, auction_id=auction, price=new_bid)
-        obj.save()
-        return redirect('detail', id=id)
+        if request.user != auction.user:
+            new_bid = request.POST['bid']
+            obj = Bid.objects.create(user_id=request.user, auction_id=auction, price=new_bid)
+            obj.save()
+            return redirect('detail', id=id)
+        else:
+            auction.active = False
+            auction.save()
+            return redirect('detail', id=id)
     else:
         auction = get_object_or_404(Auction, pk=id)
-        # obj, created = Bid.objects.get_or_create(auction_id=auction)
-        # if created == True:
-        #     obj.price = auction.starting_bid
-        #     obj.save()
-        #     latest_bid = obj.price
-        # else:
-        #     bid = obj.latest('date')
-        #     latest_bid = bid.price
+        # If there is no bid on the item, one will be created,
+        # If there is already a bid it will be passed in to the template
         try:
             bid = Bid.objects.filter(auction_id=auction).latest('date')
         except Bid.DoesNotExist:
@@ -118,12 +117,15 @@ def detail(request, id):
             
         latest_bid = bid.price
         images = AuctionImage.objects.filter(auction=auction)
+        
         context = {
             "auction": auction,
             "latest_bid": latest_bid,
             "images": images,
             "id": id
         }
+        if auction.active == False and bid.user_id == request.user:
+            context["user_won"] = request.user
         return render(request, "auctions/auction_detail.html", context)
 
 

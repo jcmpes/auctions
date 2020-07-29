@@ -52,9 +52,15 @@
                     <div class="detail-description"><p>{{ auction.description }}</p> </div>
                     <!-- Latest Bid. -->
                     <div class="detail-price">Latest Bid: {{ latest_bid }}</div>
+                    {% if user_won %}
+                        <div class="row">
+                            <div><h2 class="auction-won">You won this auction!</h2></div>
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
+        {% if request.user !=  auction.user and user_won == False %}
         <div class="row">
             <div class=""></div>
             <form class="place-bid" action="{% url 'detail' id %}" method="post">
@@ -63,6 +69,15 @@
                 <button class="btn btn-primary" type="submit">Place Bid</button>
             </form>
         </div>
+        {% elif request.user ==  auction.user and user_won == False %}
+        <div class="row">
+            <form class="delete-bid" action="{% url 'detail' id %}" method="post">
+                {% csrf_token %}
+                <button class="btn btn-danger" type="submit">Close Auction</button>
+            </form>
+        </div>
+        {% endif %}
+
     </div>
 <!-- JQuery -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
