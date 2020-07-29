@@ -36,6 +36,7 @@
                     <!--/.Carousel Wrapper-->
                 </div>
                 <div class="col-8">
+                    <!-- Title with watchlist button. -->
                     <h2>
                         {{ auction.title }}
                         {% if request.user.is_authenticated %}
@@ -44,15 +45,23 @@
                                 {% else %}
                                     <a href="{% url 'watchlist' id %}"><i class="far fa-heart"></i></a>
                                 {% endif %}                               
-                        {% endif %}
-                        
+                        {% endif %}                        
                     </h2>
+                    <!-- /.Title. -->
+                    <!-- Description. -->
                     <div class="detail-description"><p>{{ auction.description }}</p> </div>
+                    <!-- Latest Bid. -->
+                    <div class="detail-price">Latest Bid: {{ latest_bid }}</div>
                 </div>
             </div>
         </div>
         <div class="row">
-            
+            <div class=""></div>
+            <form class="place-bid" action="{% url 'detail' id %}" method="post">
+                {% csrf_token %}
+                <input type="number" required name="bid" min="{{ latest_bid }}" value="0" step=".01">
+                <button class="btn btn-primary" type="submit">Place Bid</button>
+            </form>
         </div>
     </div>
 <!-- JQuery -->

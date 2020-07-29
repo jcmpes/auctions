@@ -9,7 +9,7 @@ from django.views.generic.detail import DetailView
 # from django.views.generic import CreateView
 from .forms import CreateListing, CreateListingImages
 
-from .models import User, Auction, AuctionImage
+from .models import User, Auction, AuctionImage, Bid
 
 
 def index(request):
@@ -94,14 +94,37 @@ def create(request):
 
     
 def detail(request, id):
-    auction = get_object_or_404(Auction, pk=id)
-    images = AuctionImage.objects.filter(auction=auction)
-    context = {
-        "auction": auction,
-        "images": images,
-        "id": id
-    }
-    return render(request, "auctions/auction_detail.html", context)
+    if request.method == "POST":
+        auction = get_object_or_404(Auction, pk=id)
+        new_bid = request.POST['bid']
+        obj = Bid.objects.create(user_id=request.user, auction_id=auction, price=new_bid)
+        obj.save()
+        return redirect('detail', id=id)
+    else:
+        auction = get_object_or_404(Auction, pk=id)
+        # obj, created = Bid.objects.get_or_create(auction_id=auction)
+        # if created == True:
+        #     obj.price = auction.starting_bid
+        #     obj.save()
+        #     latest_bid = obj.price
+        # else:
+        #     bid = obj.latest('date')
+        #     latest_bid = bid.price
+        try:
+            bid = Bid.objects.filter(auction_id=auction).latest('date')
+        except Bid.DoesNotExist:
+            bid = Bid.objects.create(user_id=auction.user, auction_id=auction, price=auction.starting_bid)
+            bid.save()
+            
+        latest_bid = bid.price
+        images = AuctionImage.objects.filter(auction=auction)
+        context = {
+            "auction": auction,
+            "latest_bid": latest_bid,
+            "images": images,
+            "id": id
+        }
+        return render(request, "auctions/auction_detail.html", context)
 
 
 def watchlist(request, id):

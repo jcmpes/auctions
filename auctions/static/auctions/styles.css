@@ -11,9 +11,11 @@ body {
     padding: 10px;
 }
 
-.auction-title {
+.auction-title > a {
     font-size: 28px;
     font-weight: bolder;
+    text-decoration: none;
+    color: black;
 }
 
 .auction-data {
@@ -40,4 +42,8 @@ body {
 
 .fa-heart {
     color: #F783AC;
+}
+
+.place-bid {
+    margin-top: 30px;
 }
