@@ -18,7 +18,7 @@
                     <div class="col-8 auction-data">
                         <div class="auction-title"><a href="{% url 'detail' auction.id %}">{{ auction.title }}</a></div>
                         <div class="auction-description">{{ auction.description }}</div>
-                        <div class="auction-bid">{{ auction.starting_bid }} €</div>
+                        <div class="auction-bid">{{ auction.get_latest_bid.price }} €</div>
                         <div class="auction-date">Created on {{ auction.date }}</div>
                     </div>
                 </div>

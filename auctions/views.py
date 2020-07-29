@@ -109,18 +109,17 @@ def detail(request, id):
         auction = get_object_or_404(Auction, pk=id)
         # If there is no bid on the item, one will be created,
         # If there is already a bid it will be passed in to the template
-        try:
-            bid = Bid.objects.filter(auction_id=auction).latest('date')
-        except Bid.DoesNotExist:
-            bid = Bid.objects.create(user_id=auction.user, auction_id=auction, price=auction.starting_bid)
-            bid.save()
+        # THIS LOGIS WAS MOVED TO THE MODELS
+        # try:
+        #     bid = Bid.objects.filter(auction_id=auction).latest('date')
+        # except Bid.DoesNotExist:
+        #     bid = Bid.objects.create(user_id=auction.user, auction_id=auction, price=auction.starting_bid)
+        #     bid.save()
             
-        latest_bid = bid.price
         images = AuctionImage.objects.filter(auction=auction)
         
         context = {
             "auction": auction,
-            "latest_bid": latest_bid,
             "images": images,
             "id": id
         }

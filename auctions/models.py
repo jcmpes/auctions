@@ -34,6 +34,14 @@ class Auction(models.Model):
     def __str__(self):
         return '{} | {}'.format(self.user, self.title)
 
+    def get_latest_bid(self):
+        try:
+            bid = Bid.objects.filter(auction_id=self).latest('date')
+        except Bid.DoesNotExist:
+            bid = Bid.objects.create(user_id=self.user, auction_id=self, price=self.starting_bid)
+            bid.save()     
+        return bid
+
 
 class AuctionImage(models.Model):
     auction = models.ForeignKey(Auction, on_delete=models.CASCADE, blank=True, null=True)

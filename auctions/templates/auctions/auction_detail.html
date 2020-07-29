@@ -51,7 +51,7 @@
                     <!-- Description. -->
                     <div class="detail-description"><p>{{ auction.description }}</p> </div>
                     <!-- Latest Bid. -->
-                    <div class="detail-price">Latest Bid: {{ latest_bid }}</div>
+                    <div class="detail-price">Latest Bid: {{ auction.get_latest_bid.price }}</div>
                     {% if user_won %}
                         <div class="row">
                             <div><h2 class="auction-won">You won this auction!</h2></div>
@@ -60,16 +60,16 @@
                 </div>
             </div>
         </div>
-        {% if request.user !=  auction.user and user_won == False %}
+        {% if request.user != auction.user %}
         <div class="row">
             <div class=""></div>
             <form class="place-bid" action="{% url 'detail' id %}" method="post">
                 {% csrf_token %}
-                <input type="number" required name="bid" min="{{ latest_bid }}" value="0" step=".01">
+                <input type="number" required name="bid" min="{{ auction.get_latest_bid.price }}" value="0" step=".01">
                 <button class="btn btn-primary" type="submit">Place Bid</button>
             </form>
         </div>
-        {% elif request.user ==  auction.user and user_won == False %}
+        {% else %}
         <div class="row">
             <form class="delete-bid" action="{% url 'detail' id %}" method="post">
                 {% csrf_token %}
