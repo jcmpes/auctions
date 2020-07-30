@@ -9,7 +9,7 @@ from django.views.generic.detail import DetailView
 # from django.views.generic import CreateView
 from .forms import CreateListing, CreateListingImages
 
-from .models import User, Auction, AuctionImage, Bid
+from .models import User, Auction, AuctionImage, Bid, Comment
 
 
 def index(request):
@@ -96,32 +96,29 @@ def create(request):
 def detail(request, id):
     if request.method == "POST":
         auction = get_object_or_404(Auction, pk=id)
-        if request.user != auction.user:
-            new_bid = request.POST['bid']
-            obj = Bid.objects.create(user_id=request.user, auction_id=auction, price=new_bid)
-            obj.save()
+        if request.POST['comment']:
+            comment = request.POST['comment']
+            com = Comment.objects.create(user_id=request.user, auction_id=auction, comment=comment)
             return redirect('detail', id=id)
-        else:
-            auction.active = False
-            auction.save()
-            return redirect('detail', id=id)
+        else:   
+            if request.user != auction.user:
+                new_bid = request.POST['bid']
+                obj = Bid.objects.create(user_id=request.user, auction_id=auction, price=new_bid)
+                obj.save()
+                return redirect('detail', id=id)
+            else:
+                auction.active = False
+                auction.save()
+                return redirect('detail', id=id)
     else:
         auction = get_object_or_404(Auction, pk=id)
-        # If there is no bid on the item, one will be created,
-        # If there is already a bid it will be passed in to the template
-        # THIS LOGIS WAS MOVED TO THE MODELS
-        # try:
-        #     bid = Bid.objects.filter(auction_id=auction).latest('date')
-        # except Bid.DoesNotExist:
-        #     bid = Bid.objects.create(user_id=auction.user, auction_id=auction, price=auction.starting_bid)
-        #     bid.save()
-            
         images = AuctionImage.objects.filter(auction=auction)
-        
+        comments = Comment.objects.all()
         context = {
             "auction": auction,
             "images": images,
-            "id": id
+            "id": id,
+            "comments": comments
         }
         if auction.active == False and bid.user_id == request.user:
             context["user_won"] = request.user

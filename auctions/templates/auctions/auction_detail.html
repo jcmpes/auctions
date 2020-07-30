@@ -60,9 +60,9 @@
                 </div>
             </div>
         </div>
+        <!-- Make a Bid. -->
         {% if request.user != auction.user %}
-        <div class="row">
-            <div class=""></div>
+        <div class="bid-form">
             <form class="place-bid" action="{% url 'detail' id %}" method="post">
                 {% csrf_token %}
                 <input type="number" required name="bid" min="{{ auction.get_latest_bid.price }}" value="0" step=".01">
@@ -70,14 +70,42 @@
             </form>
         </div>
         {% else %}
-        <div class="row">
+        <!-- Stop Auction. -->
+        <div class="close-bid">
             <form class="delete-bid" action="{% url 'detail' id %}" method="post">
                 {% csrf_token %}
                 <button class="btn btn-danger" type="submit">Close Auction</button>
             </form>
         </div>
         {% endif %}
-
+        <!-- Comments. -->
+        <div class="comments-section mt-3">
+            <h2>Comments</h2>
+            {% if request.user.is_authenticated %}
+            <div class="comments-form">
+                <form action="{% url 'detail' id%}" method="post" id="comments-form">
+                    {% csrf_token %}
+                    <textarea rows="2" cols="60" form="comments-form" name="comment" placeholder="Type in a comment"></textarea>
+                    <br>
+                    <button class="btn btn-primary mt-2 float-right" type="submit">Submit</button>
+                </form>
+            </div>
+            {% endif %}
+            <div class="comments-list">
+                {% for comment in comments %}
+                    <div class="comment">
+                        <div class="comment-user">{{ comment.user_id }} <span> said on {{ comment.date }}</span></div>
+                        <div class="actual-comment"><p>{{ comment.comment }}</p></div>
+                    </div>
+                {% empty %}
+                    <p>There are no comments for this auction.
+                        {% if not request.user.is_authenticated %}
+                        Please, <a href="{% url 'login' %}">log in</a> if you want to comment.
+                        {% endif %}
+                    </p>
+                {% endfor %}
+            </div>
+        </div>
     </div>
 <!-- JQuery -->
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>

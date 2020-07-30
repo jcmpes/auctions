@@ -18,9 +18,9 @@ class Auction(models.Model):
         ('EL', 'Electronics'),
         ('HO', "Home"),
         ('FA', "Fashion"),
-        ('OT', "Other")
-        
+        ('OT', "Other")       
     ]
+
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     starting_bid = models.DecimalField(max_digits=8, decimal_places=2)
     title = models.CharField(max_length=60)
@@ -62,7 +62,7 @@ class Bid(models.Model):
 
 
 class Comment(models.Model):
+    auction_id = models.ForeignKey(Auction, on_delete=models.CASCADE)
     user_id = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     date = models.DateTimeField(default=timezone.now)
-    title = models.CharField(max_length=60)
     comment = models.TextField(blank=False)
