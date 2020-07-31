@@ -4,27 +4,27 @@
     <h2>Active Listings</h2>
     <div class="container">
         <div class="row">
-            
-            <ul>
-            {% for auction in auctions %}
-                <div class="auction-item d-flex">
-                    <div class="col-4">
-                        <div>
-                            <a href="{% url 'detail' auction.id %}">
-                                <img class="auction-image" src="/media/{{ auction.image }}" alt="">
-                            </a>
+            <div class="d-flex flex-column h-100">
+
+                {% for auction in auctions %}
+                    <div class="auction-item d-flex">
+                        <div class="col-4 auction-image-col">
+                            <div>
+                                <a href="{% url 'detail' auction.id %}">
+                                    <img class="auction-image" src="/media/{{ auction.image }}" alt="">
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-8 auction-data">
+                            <div class="auction-title"><a href="{% url 'detail' auction.id %}">{{ auction.title }}</a></div>
+                            <div class="auction-description">{{ auction.description }}</div>
+                            <div class="auction-bid">{{ auction.get_latest_bid.price }} €</div>
+                            <div class="auction-date">Created on {{ auction.date }}</div>
                         </div>
                     </div>
-                    <div class="col-8 auction-data">
-                        <div class="auction-title"><a href="{% url 'detail' auction.id %}">{{ auction.title }}</a></div>
-                        <div class="auction-description">{{ auction.description }}</div>
-                        <div class="auction-bid">{{ auction.get_latest_bid.price }} €</div>
-                        <div class="auction-date">Created on {{ auction.date }}</div>
-                    </div>
-                </div>
-            {% endfor %}
-            </ul>
+                {% endfor %}
 
+            </div>         
         </div>
     </div>
 {% endblock %}
