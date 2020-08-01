@@ -72,7 +72,7 @@
             <h2>Comments</h2>
             {% if request.user.is_authenticated %}
             <div class="comments-form">
-                <form action="{% url 'detail' id%}" method="post" id="comments-form">
+                <form action="{% url 'new_comment' id %}" method="post" id="comments-form">
                     {% csrf_token %}
                     <textarea rows="2" cols="60" form="comments-form" name="comment" placeholder="Type in a comment"></textarea>
                     <br>

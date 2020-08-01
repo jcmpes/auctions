@@ -96,20 +96,15 @@ def create(request):
 def detail(request, id):
     if request.method == "POST":
         auction = get_object_or_404(Auction, pk=id)
-        if request.POST['comment']:
-            comment = request.POST['comment']
-            com = Comment.objects.create(user_id=request.user, auction_id=auction, comment=comment)
+        if request.user != auction.user:
+            new_bid = request.POST['bid']
+            obj = Bid.objects.create(user_id=request.user, auction_id=auction, price=new_bid)
+            obj.save()
             return redirect('detail', id=id)
-        else:   
-            if request.user != auction.user:
-                new_bid = request.POST['bid']
-                obj = Bid.objects.create(user_id=request.user, auction_id=auction, price=new_bid)
-                obj.save()
-                return redirect('detail', id=id)
-            else:
-                auction.active = False
-                auction.save()
-                return redirect('detail', id=id)
+        else:
+            auction.active = False
+            auction.save()
+            return redirect('detail', id=id)
     else:
         auction = get_object_or_404(Auction, pk=id)
         images = AuctionImage.objects.filter(auction=auction)
@@ -123,6 +118,13 @@ def detail(request, id):
         if auction.active == False and bid.user_id == request.user:
             context["user_won"] = request.user
         return render(request, "auctions/auction_detail.html", context)
+
+
+def new_comment(request, id):
+    auction = get_object_or_404(Auction, pk=id)
+    comment = request.POST['comment']
+    com = Comment.objects.create(user_id=request.user, auction_id=auction, comment=comment)
+    return redirect('detail', id=id)
 
 
 def watchlist(request, id):
@@ -140,3 +142,11 @@ def watchlist(request, id):
 
 class ListingDetail(DetailView):
     model = Auction
+
+
+
+
+
+def category(request, slug):
+    auctions = Auction.objects.filter(category=slug)
+    render(request, "auctions/index", {"auctions": auctions})

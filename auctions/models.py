@@ -12,21 +12,23 @@ def user_directory_path(instance, filename):
     # File will be uploaded to MEDIA_ROOT / user_<id>/<filename>
     return 'user_{0}/{1}'.format(instance.user.id, filename)
 
-class Auction(models.Model):
-    CATEGORIES = [
-        ('TO', 'Toys'),
-        ('EL', 'Electronics'),
-        ('HO', "Home"),
-        ('FA', "Fashion"),
-        ('OT', "Other")       
-    ]
 
+class Category(models.Model):
+    name = models.CharField(max_length=16)
+    slug = models.SlugField()
+
+    def __str__(self):
+        return self.name
+        
+
+
+class Auction(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.SET_DEFAULT, default="Others")
     starting_bid = models.DecimalField(max_digits=8, decimal_places=2)
     title = models.CharField(max_length=60)
     description = models.TextField(blank=False)
-    image = models.ImageField(upload_to='media/%Y/%m/%d/')
-    category = models.CharField(max_length=2, choices=CATEGORIES)
+    image = models.ImageField(upload_to='media/%Y/%m/%d/')    
     date = models.DateTimeField(default=timezone.now)
     wl = models.ManyToManyField(User, related_name='watchlist', blank=True)
     active = models.BooleanField(default=True)
