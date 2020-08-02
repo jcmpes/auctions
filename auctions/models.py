@@ -71,3 +71,6 @@ class Comment(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     date = models.DateTimeField(default=timezone.now)
     comment = models.TextField(blank=False)
+
+    def __str__(self):
+        return 'Comment on {} by {} on {}'.format(self.auction_id.title, self.user_id.username, self.date.strftime('%d/%m/%Y'))
