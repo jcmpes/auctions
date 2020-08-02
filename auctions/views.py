@@ -9,7 +9,7 @@ from django.views.generic.detail import DetailView
 # from django.views.generic import CreateView
 from .forms import CreateListing, CreateListingImages
 
-from .models import User, Auction, AuctionImage, Bid, Comment
+from .models import User, Auction, AuctionImage, Bid, Comment, Category
 
 
 def index(request):
@@ -144,9 +144,17 @@ class ListingDetail(DetailView):
     model = Auction
 
 
+def category(request, category_slug):
+    category = get_object_or_404(Category, slug=category_slug)
+    auctions = Auction.objects.filter(category=category)
+    if not auctions:
+        messages.info(request, "There are currently no auctions in the selected category.")
+    return render(request, "auctions/index.html", {"auctions": auctions})
 
 
-
-def category(request, slug):
-    auctions = Auction.objects.filter(category=slug)
-    render(request, "auctions/index", {"auctions": auctions})
+def categories(request):
+    categories = Category.objects.all()
+    context = {
+        "categories": categories
+    }
+    return render(request, "auctions/categories.html", context)
