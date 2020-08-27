@@ -59,13 +59,19 @@
             </form>
         </div>
         {% else %}
-        <!-- Stop Auction. -->
-        <div class="close-bid">
-            <form class="delete-bid" action="{% url 'detail' id %}" method="post">
-                {% csrf_token %}
-                <button class="btn btn-danger" type="submit">Close Auction</button>
-            </form>
-        </div>
+            <!-- Stop Auction. -->
+            {% if auction.active == True %}
+            <div class="close-bid">
+                <form class="delete-bid" action="{% url 'detail' id %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-danger" type="submit">Close Auction</button>
+                </form>
+            </div>
+            {% else %}
+            <div class="close-bid">
+                <h5>This auction is closed</h5>
+            </div>
+            {% endif %}
         {% endif %}
         <!-- Comments. -->
         <div class="comments-section mt-3">

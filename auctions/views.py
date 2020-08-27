@@ -86,7 +86,7 @@ def create(request):
             obj.save()
             for f in files:
                 AuctionImage.objects.create(auction=obj, image=f)
-            return render(request, "auctions/index.html")
+            return redirect('index')
 
     else:
         form = CreateListingImages()
@@ -115,7 +115,7 @@ def detail(request, id):
             "id": id,
             "comments": comments
         }
-        if auction.active == False and bid.user_id == request.user:
+        if auction.active == False and auction.user_id == request.user:
             context["user_won"] = request.user
         return render(request, "auctions/auction_detail.html", context)
 
